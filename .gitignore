@@ -168,6 +168,9 @@ cache/
 *_test_log*.txt
 *_test_output*.txt
 
+# Large data files
+ai_models_list.json
+
 # Migration files that might be large or contain sensitive data
 migrations/*.txt
 migrations/*.backup
