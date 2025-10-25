@@ -1,0 +1,29 @@
+{
+  "name": "google-workspace-service",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "npm run migrate:remote && wrangler deploy",
+    "start": "wrangler dev",
+    "migrate:local": "wrangler d1 migrations apply DB --local",
+    "migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "test": "tsx tests/run-tests.ts",
+    "test:unit": "tsx tests/unit/cache.test.ts && tsx tests/unit/performance-monitor.test.ts",
+    "test:integration": "tsx tests/integration/api.test.ts",
+    "test:watch": "tsx --watch tests/run-tests.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.60.0",
+    "@google/generative-ai": "^0.24.1",
+    "google-auth-library": "^9.0.0",
+    "googleapis": "^156.0.0",
+    "hono": "^3.7.2",
+    "openai": "^5.12.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "wrangler": "^4.32.0"
+  }
+}

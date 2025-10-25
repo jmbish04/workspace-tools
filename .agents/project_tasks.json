@@ -1,0 +1,83 @@
+{
+  "epics": [
+    {
+      "title": "Core Ingestion Pipeline Setup",
+      "description": "Establish the foundational worker, database schema, and API for receiving Gmail data.",
+      "tasks": [
+        {
+          "title": "Initialize Cloudflare Worker Project",
+          "description": "Set up a new Cloudflare Worker project using Wrangler, including basic configuration and environment setup.",
+          "status": "pending",
+          "steps": [
+            "Run `wrangler init` to create the project structure.",
+            "Configure `wrangler.toml` with necessary bindings for D1, R2, and Queues.",
+            "Set up environment variables for database names and bucket names."
+          ],
+          "success_criteria": "The worker can be deployed to Cloudflare and responds to a basic health check endpoint.",
+          "unit_test_criteria": "N/A",
+          "dependencies": [],
+          "dependents": ["ai-agent", "frontend-chat", "mcp-server"]
+        },
+        {
+          "title": "Define and Migrate D1 Database Schema",
+          "description": "Create and apply the initial D1 database schema for messages, threads, and attachments.",
+          "status": "pending",
+          "steps": [
+            "Write SQL migration scripts for `messages`, `threads`, and `attachments` tables.",
+            "Include columns for relationships (e.g., `message_id`, `thread_id`).",
+            "Add a `vectorization_status` column to messages and attachments.",
+            "Run migrations using `wrangler d1 migrations apply`."
+          ],
+          "success_criteria": "The database schema is successfully applied to the D1 database and can be inspected.",
+          "unit_test_criteria": "Write a test script to connect to the database and verify that all tables and columns exist as expected.",
+          "dependencies": [],
+          "dependents": ["ai-agent"]
+        },
+        {
+          "title": "Implement Secure Ingestion API Endpoint",
+          "description": "Build the main `/api/v1/messages` endpoint to handle incoming email data.",
+          "status": "pending",
+          "steps": [
+            "Create a POST route for `/api/v1/messages`.",
+            "Implement API key authentication middleware.",
+            "Parse the incoming JSON payload containing email data.",
+            "Develop logic to differentiate between large and small attachments based on a size field in the payload."
+          ],
+          "success_criteria": "The endpoint correctly receives data, validates the API key, and processes the payload without errors.",
+          "unit_test_criteria": "Create unit tests that simulate valid and invalid API calls to the endpoint.",
+          "dependencies": [],
+          "dependents": []
+        },
+        {
+          "title": "Implement R2 Signed URL Generation",
+          "description": "Create the `/api/v1/attachments/upload-url` endpoint to provide secure, short-lived URLs for direct R2 uploads.",
+          "status": "pending",
+          "steps": [
+            "Create a POST route for `/api/v1/attachments/upload-url`.",
+            "Use the Cloudflare R2 client library to generate a presigned POST URL.",
+            "Return the signed URL and required fields to the client.",
+            "Implement a callback endpoint `/api/v1/attachments/upload-complete` to be called by the client after upload."
+          ],
+          "success_criteria": "The endpoint generates a valid signed URL that can be used to upload a file to R2.",
+          "unit_test_criteria": "Write a test that calls the endpoint, receives a URL, and simulates a file upload.",
+          "dependencies": [],
+          "dependents": []
+        },
+        {
+          "title": "Implement Queue Integration",
+          "description": "Integrate Cloudflare Queues to send notifications to the AI Agent worker when new data is ready for processing.",
+          "status": "pending",
+          "steps": [
+            "Ensure the `EMAIL_QUEUE` binding is configured.",
+            "After successfully processing an email and its attachments, construct a JSON message containing the `message_id` and `attachment_ids`.",
+            "Use the queue client to send the message to the `EMAIL_QUEUE`."
+          ],
+          "success_criteria": "A message is successfully published to the queue after an email is ingested.",
+          "unit_test_criteria": "Mock the queue binding and verify that the `send` method is called with the correct payload.",
+          "dependencies": [],
+          "dependents": ["ai-agent"]
+        }
+      ]
+    }
+  ]
+}

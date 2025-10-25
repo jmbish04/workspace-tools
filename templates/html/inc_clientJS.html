@@ -1,0 +1,531 @@
+<script>
+    // Global state management
+    window.AppState = {
+        loading: false,
+        error: null,
+        data: null
+    };
+
+    // Utility functions for UI management
+    function showLoading() {
+        document.getElementById('loading').style.display = 'flex';
+        document.getElementById('content').style.display = 'none';
+        document.getElementById('error').style.display = 'none';
+        window.AppState.loading = true;
+    }
+
+    function hideLoading() {
+        document.getElementById('loading').style.display = 'none';
+        window.AppState.loading = false;
+    }
+
+    function showContent() {
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('error').style.display = 'none';
+    }
+
+    function showError(message) {
+        document.getElementById('error-message').textContent = message;
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('content').style.display = 'none';
+        hideLoading();
+        window.AppState.error = message;
+    }
+
+    function clearError() {
+        document.getElementById('error').style.display = 'none';
+        window.AppState.error = null;
+    }
+
+    // Google Apps Script communication - SPECIFIC FUNCTIONS ONLY
+    // Each server-side function needs its own client-side wrapper
+    
+    function getServerStatus() {
+        showLoading();
+        
+        google.script.run
+            .withSuccessHandler(function(result) {
+                hideLoading();
+                window.AppState.data = result;
+                displayResult('Status retrieved successfully', result);
+            })
+            .withFailureHandler(function(error) {
+                hideLoading();
+                const errorMessage = error.message || 'An unexpected error occurred';
+                showError(errorMessage);
+            })
+            .getServerStatus();
+    }
+
+    function submitData(data) {
+        showLoading();
+        
+        google.script.run
+            .withSuccessHandler(function(result) {
+                hideLoading();
+                window.AppState.data = result;
+                displaySuccess('Data submitted successfully');
+            })
+            .withFailureHandler(function(error) {
+                hideLoading();
+                const errorMessage = error.message || 'Failed to submit data';
+                showError(errorMessage);
+            })
+            .submitData(data);
+    }
+
+    function getUserData() {
+        showLoading();
+        
+        google.script.run
+            .withSuccessHandler(function(result) {
+                hideLoading();
+                window.AppState.data = result;
+                displayUserData(result);
+            })
+            .withFailureHandler(function(error) {
+                hideLoading();
+                const errorMessage = error.message || 'Failed to fetch user data';
+                showError(errorMessage);
+            })
+            .getUserData();
+    }
+
+    function generateReport(params) {
+        showLoading();
+        
+        google.script.run
+            .withSuccessHandler(function(result) {
+                hideLoading();
+                document.getElementById('results').style.display = 'block';
+                document.getElementById('results-content').innerHTML = `
+                    <div class="success">
+                        <h4>Report Generated Successfully</h4>
+                        <p><strong>Type:</strong> ${params.type}</p>
+                        <p><strong>Generated At:</strong> ${new Date().toLocaleString()}</p>
+                        ${result.downloadUrl ? `<a href="${result.downloadUrl}" class="btn btn-primary" target="_blank">Download Report</a>` : ''}
+                    </div>
+                `;
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            })
+            .withFailureHandler(function(error) {
+                hideLoading();
+                const errorMessage = error.message || 'Failed to generate report';
+                showError(errorMessage);
+            })
+            .generateReport(params);
+    }
+
+    function clearAllData() {
+        if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+            showLoading();
+            
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    hideLoading();
+                    displaySuccess('All data has been cleared successfully');
+                    document.getElementById('userForm').reset();
+                    document.getElementById('results').style.display = 'none';
+                })
+                .withFailureHandler(function(error) {
+                    hideLoading();
+                    const errorMessage = error.message || 'Failed to clear data';
+                    showError(errorMessage);
+                })
+                .clearAllData();
+        }
+    }
+
+    // Additional server function wrappers can be added here following the same pattern
+    // Example:
+    // function yourServerFunction(param1, param2) {
+    //     showLoading();
+    //     
+    //     google.script.run
+    //         .withSuccessHandler(function(result) {
+    //             hideLoading();
+    //             // Handle success
+    //         })
+    //         .withFailureHandler(function(error) {
+    //             hideLoading();
+    //             showError(error.message || 'Operation failed');
+    //         })
+    //         .yourServerFunction(param1, param2);
+    // }
+
+    // Form handling utilities
+    function handleFormSubmit(formId, serverFunction) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const result = await callServerFunction(serverFunction, data);
+                displaySuccess('Form submitted successfully');
+                form.reset();
+                return result;
+            } catch (error) {
+                // Error is already displayed by callServerFunction
+                console.error('Form submission failed:', error);
+            }
+        });
+    }
+
+    // Display utilities
+    function displayResult(message, data) {
+        clearError();
+        showContent();
+
+        const contentDiv = document.getElementById('content');
+        contentDiv.innerHTML = `
+        <div class="success">
+            <h3>✅ ${message}</h3>
+            ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+        </div>
+    `;
+    }
+
+    function displaySuccess(message) {
+        clearError();
+        showContent();
+
+        const contentDiv = document.getElementById('content');
+        contentDiv.innerHTML = `
+        <div class="success">
+            <h3>✅ ${message}</h3>
+        </div>
+    `;
+    }
+
+    function displayUserData(userData) {
+        clearError();
+        showContent();
+
+        const contentDiv = document.getElementById('content');
+        contentDiv.innerHTML = `
+        <div class="card">
+            <div class="card-header">
+                <h3>User Information</h3>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    ${Object.entries(userData || {}).map(([key, value]) => `
+                        <tr>
+                            <td><strong>${key}</strong></td>
+                            <td>${value}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            </div>
+        </div>
+    `;
+    }
+
+    // Retry mechanism
+    function retryOperation() {
+        if (window.lastOperation) {
+            window.lastOperation();
+        } else {
+            location.reload();
+        }
+    }
+
+    // Validation utilities
+    function validateForm(formId, rules) {
+        const form = document.getElementById(formId);
+        if (!form) return false;
+
+        let isValid = true;
+        const errors = {};
+
+        Object.entries(rules).forEach(([fieldName, fieldRules]) => {
+            const field = form.querySelector(`[name="${fieldName}"]`);
+            if (!field) return;
+
+            const value = field.value.trim();
+
+            // Required validation
+            if (fieldRules.required && !value) {
+                errors[fieldName] = 'This field is required';
+                isValid = false;
+            }
+
+            // Email validation
+            if (fieldRules.email && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                errors[fieldName] = 'Please enter a valid email address';
+                isValid = false;
+            }
+
+            // Min length validation
+            if (fieldRules.minLength && value && value.length < fieldRules.minLength) {
+                errors[fieldName] = `Must be at least ${fieldRules.minLength} characters`;
+                isValid = false;
+            }
+
+            // Max length validation
+            if (fieldRules.maxLength && value && value.length > fieldRules.maxLength) {
+                errors[fieldName] = `Must be no more than ${fieldRules.maxLength} characters`;
+                isValid = false;
+            }
+        });
+
+        // Display errors
+        Object.entries(errors).forEach(([fieldName, error]) => {
+            const field = form.querySelector(`[name="${fieldName}"]`);
+            if (field) {
+                field.classList.add('error');
+
+                // Remove existing error message
+                const existingError = field.parentNode.querySelector('.form-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+
+                // Add new error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'form-error';
+                errorDiv.textContent = error;
+                field.parentNode.appendChild(errorDiv);
+            }
+        });
+
+        // Clear errors for valid fields
+        Object.keys(rules).forEach(fieldName => {
+            if (!errors[fieldName]) {
+                const field = form.querySelector(`[name="${fieldName}"]`);
+                if (field) {
+                    field.classList.remove('error');
+                    const errorDiv = field.parentNode.querySelector('.form-error');
+                    if (errorDiv) {
+                        errorDiv.remove();
+                    }
+                }
+            }
+        });
+
+        return isValid;
+    }
+
+    // Initialize app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        // Hide loading initially if content is static
+        if (document.getElementById('content').innerHTML.trim()) {
+            hideLoading();
+            showContent();
+        }
+
+        // Add click handlers for any buttons with data-action attributes
+        document.querySelectorAll('[data-action]').forEach(button => {
+            button.addEventListener('click', function () {
+                const action = this.getAttribute('data-action');
+                const params = this.getAttribute('data-params');
+
+                if (window[action]) {
+                    window.lastOperation = () => window[action](params ? JSON.parse(params) : undefined);
+                    window[action](params ? JSON.parse(params) : undefined);
+                }
+            });
+        });
+
+        // Auto-setup form handlers
+        document.querySelectorAll('[data-server-function]').forEach(form => {
+            const serverFunction = form.getAttribute('data-server-function');
+            handleFormSubmit(form.id, serverFunction);
+        });
+    });
+
+    // Export utilities to global scope for easy access
+    window.AppUtils = {
+        callServerFunction,
+        callServerFunctionWithObject,
+        showLoading,
+        hideLoading,
+        showContent,
+        showError,
+        clearError,
+        displayResult,
+        displaySuccess,
+        displayUserData,
+        validateForm,
+        handleFormSubmit
+    };
+
+    // Provide specific helper functions for common Google Apps Script patterns
+    window.GASHelpers = {
+        // For server functions that expect individual parameters
+        callWithParams: (functionName, ...params) => callServerFunction(functionName, ...params),
+        
+        // For server functions that expect a single object
+        callWithObject: (functionName, dataObject) => callServerFunction(functionName, dataObject),
+        
+        // For server functions that expect named parameters (common pattern)
+        callWithNamedParams: (functionName, namedParams) => {
+            // Convert named parameters to individual arguments in a predictable order
+            const orderedParams = Object.keys(namedParams).sort().map(key => namedParams[key]);
+            return callServerFunction(functionName, namedParams); // Pass as single object for flexibility
+        }
+    };
+
+    // Example usage functions (can be customized per application)
+    
+    // Example 1: Calling server function with no parameters
+    function exampleNoParams() {
+        callServerFunction('getServerTime')
+            .then(result => {
+                displayResult('Server time retrieved', result);
+            })
+            .catch(error => {
+                console.error('Failed to get server time:', error);
+            });
+    }
+
+    // Example 2: Calling server function with individual parameters
+    function exampleWithParams() {
+        callServerFunction('processUserData', 'john@example.com', 'John Doe', 30)
+            .then(result => {
+                displayResult('User data processed', result);
+            })
+            .catch(error => {
+                console.error('Failed to process user data:', error);
+            });
+    }
+
+    // Example 3: Calling server function with object parameter (most common)
+    function exampleApiCall() {
+        callServerFunction('exampleServerFunction', { 
+            param1: 'value1', 
+            param2: 'value2', 
+            param3: 123 
+        })
+            .then(result => {
+                displayResult('API call successful', result);
+            })
+            .catch(error => {
+                // Error already handled by callServerFunction
+                console.error('API call failed:', error);
+            });
+    }
+
+    // Example 4: Using the helper functions for clarity
+    function exampleWithHelpers() {
+        // For server functions expecting individual arguments
+        GASHelpers.callWithParams('addNumbers', 10, 20, 30)
+            .then(result => console.log('Sum:', result));
+
+        // For server functions expecting an object
+        GASHelpers.callWithObject('saveUserProfile', {
+            name: 'John Doe',
+            email: 'john@example.com',
+            age: 30
+        }).then(result => console.log('Profile saved:', result));
+
+        // For server functions with named parameters
+        GASHelpers.callWithNamedParams('generateReport', {
+            type: 'monthly',
+            startDate: '2024-01-01',
+            endDate: '2024-01-31',
+            format: 'pdf'
+        }).then(result => console.log('Report generated:', result));
+    }
+
+    function exampleFormSubmission() {
+        const formData = {
+            name: 'John Doe',
+            email: 'john@example.com',
+            message: 'Hello from the client!'
+        };
+
+        submitData(formData)
+            .then(result => {
+                console.log('Form submission result:', result);
+            })
+            .catch(error => {
+                console.error('Form submission error:', error);
+            });
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function (e) {
+        // Ctrl/Cmd + R for retry
+        if ((e.ctrlKey || e.metaKey) && e.key === 'r' && window.AppState.error) {
+            e.preventDefault();
+            retryOperation();
+        }
+    });
+
+
+    async function generateReport(params) {
+        try {
+            const result = await callServerFunction('generateReport', params);
+
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results-content').innerHTML = `
+                    <div class="success">
+                        <h4>Report Generated Successfully</h4>
+                        <p><strong>Type:</strong> ${params.type}</p>
+                        <p><strong>Generated At:</strong> ${new Date().toLocaleString()}</p>
+                        ${result.downloadUrl ? `<a href="${result.downloadUrl}" class="btn btn-primary" target="_blank">Download Report</a>` : ''}
+                    </div>
+                `;
+
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+
+        } catch (error) {
+            console.error('Report generation failed:', error);
+        }
+    }
+
+    function clearAllData() {
+        if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+            callServerFunction('clearAllData')
+                .then(() => {
+                    displaySuccess('All data has been cleared successfully');
+                    document.getElementById('userForm').reset();
+                    document.getElementById('results').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Clear data failed:', error);
+                });
+        }
+    }
+
+    // Enhanced form validation
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('userForm');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const isValid = validateForm('userForm', {
+                name: { required: true, minLength: 2 },
+                email: { required: true, email: true },
+                message: { maxLength: 500 }
+            });
+
+            if (isValid) {
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                submitData(data)
+                    .then(result => {
+                        form.reset();
+                        document.getElementById('results').style.display = 'block';
+                        document.getElementById('results-content').innerHTML = `
+                                <div class="success">
+                                    <h4>User Data Saved</h4>
+                                    <p>Thank you, ${data.name}! Your information has been saved successfully.</p>
+                                </div>
+                            `;
+                    });
+            }
+        });
+    });
+
+
+</script>

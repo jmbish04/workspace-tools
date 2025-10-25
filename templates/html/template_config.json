@@ -1,0 +1,42 @@
+{
+    "templates": {
+        "main": {
+            "file": "main.html",
+            "description": "Basic SPA skeleton with header, main content area, footer, loading states, and error handling",
+            "variables": [
+                "APP_TITLE",
+                "APP_DESCRIPTION",
+                "MAIN_CONTENT"
+            ]
+        },
+        "example_spa": {
+            "file": "example_spa.html",
+            "description": "Complete example SPA with forms, buttons, tables, and interactive elements",
+            "variables": [
+                "APP_TITLE",
+                "APP_DESCRIPTION",
+                "APP_VERSION",
+                "LAST_UPDATED",
+                "ENVIRONMENT"
+            ]
+        }
+    },
+    "includes": {
+        "inc_styles": {
+            "file": "inc_styles.html",
+            "description": "Comprehensive CSS styling with responsive design, components, and utilities"
+        },
+        "inc_clientJS": {
+            "file": "inc_clientJS.html",
+            "description": "Client-side JavaScript with google.script.run helpers, form handling, validation, and state management"
+        }
+    },
+    "defaultVariables": {
+        "APP_TITLE": "My Google Apps Script Web App",
+        "APP_DESCRIPTION": "A modern web application built with Google Apps Script",
+        "APP_VERSION": "1.0.0",
+        "LAST_UPDATED": "2024-12-19",
+        "ENVIRONMENT": "Production",
+        "MAIN_CONTENT": "<div class=\"card\"><div class=\"card-body\"><h3>Welcome!</h3><p>Your application content goes here.</p></div></div>"
+    }
+}

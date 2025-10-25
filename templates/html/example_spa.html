@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <?!= options.APP_TITLE || "options.APP_TITLE" ?>
+    </title>
+    <?!= include('inc_styles'); ?>
+</head>
+
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="container">
+                <h1 class="app-title">
+                    <?!= options.APP_TITLE || "options.APP_TITLE" ?>
+                </h1>
+                <p class="app-description">
+                    <?!= options.APP_DESCRIPTION || "options.APP_DESCRIPTION" ?>
+                </p>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <!-- Loading State -->
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading...</p>
+                </div>
+
+                <!-- Main Content Area -->
+                <div id="content" class="content">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>User Data Form</h3>
+                                </div>
+                                <div class="card-body">
+                                    <form id="userForm" data-server-function="saveUserData">
+                                        <div class="form-group">
+                                            <label class="form-label" for="name">Name *</label>
+                                            <input type="text" id="name" name="name" class="form-control" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="email">Email *</label>
+                                            <input type="email" id="email" name="email" class="form-control" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="department">Department</label>
+                                            <select id="department" name="department" class="form-control">
+                                                <option value="">Select Department</option>
+                                                <option value="engineering">Engineering</option>
+                                                <option value="marketing">Marketing</option>
+                                                <option value="sales">Sales</option>
+                                                <option value="hr">Human Resources</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="message">Message</label>
+                                            <textarea id="message" name="message" class="form-control" rows="4"
+                                                placeholder="Enter your message here..."></textarea>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Submit Data</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Quick Actions</h3>
+                                </div>
+                                <div class="card-body">
+                                    <button class="btn btn-success mb-3" data-action="getStatus">
+                                        Check Server Status
+                                    </button>
+
+                                    <button class="btn btn-secondary mb-3" data-action="fetchUserData">
+                                        Load User Data
+                                    </button>
+
+                                    <button class="btn btn-primary mb-3" data-action="generateReport"
+                                        data-params='{"type": "monthly"}'>
+                                        Generate Monthly Report
+                                    </button>
+
+                                    <button class="btn btn-danger" onclick="clearAllData()">
+                                        Clear All Data
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>System Info</h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <tr>
+                                            <td><strong>App Version</strong></td>
+                                            <td>
+                                                <?!= options.APP_VERSION || "options.APP_VERSION" ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Last Updated</strong></td>
+                                            <td>
+                                                <?!= options.LAST_UPDATED || "options.LAST_UPDATED" ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Environment</strong></td>
+                                            <td>
+                                                <?!= options.ENVIRONMENT || "options.ENVIRONMENT" ?>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Display Area -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Results</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="results-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Display -->
+                <div id="error" class="error" style="display: none;">
+                    <div class="error-content">
+                        <h3>⚠️ Error</h3>
+                        <p id="error-message"></p>
+                        <button onclick="retryOperation()" class="btn btn-primary">Retry</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2024 Powered by Google Apps Script |
+                    <?!= options.APP_TITLE || "options.APP_TITLE" ?>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <?!= include('inc_clientJS'); ?>
+
+
+</body>
+
+</html>

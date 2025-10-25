@@ -1,0 +1,253 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+worker/
+
+# Wrangler
+.wrangler/
+.dev.vars
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+
+# Secrets and API Keys
+*.pem
+*.key
+secrets.json
+.secrets
+discovery-*.json
+google_credentials.json
+service_account.json
+*-credentials.json
+*-service-account.json
+oauth2-credentials.json
+client_secret*.json
+credentials.json
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+
+# Logs
+logs/
+*.log
+*.log.*
+workspace_tools_test_report_*.json
+test_results.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+.nyc_output/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.cache/
+.temp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Cloudflare specific
+wrangler.toml.backup
+*.toml.bak
+.wrangler/
+# Keep template but ignore actual config with IDs
+wrangler.toml
+
+# Python (for testing scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+.python-version
+
+# Testing
+test-results/
+playwright-report/
+test-reports/
+coverage/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.tmp
+
+# Lock files (keep package-lock.json but ignore others)
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Local development
+.local/
+local/
+.dev/
+
+# Documentation builds
+docs/_build/
+site/
+_site/
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.dmg
+*.iso
+
+# Google Workspace specific
+google_credentials.json
+service_account.json
+*-service-account-*.json
+oauth2-credentials.json
+client_secret*.json
+
+# Custom application specific
+reports/
+exports/
+uploads/
+downloads/
+data/
+cache/
+
+# Test files that might contain sensitive data
+*test_report*.json
+*_test_results*.json
+*_test_log*.txt
+*_test_output*.txt
+
+# Migration files that might be large or contain sensitive data
+migrations/*.txt
+migrations/*.backup
+migrations/*.bak
+
+# Configuration files that might contain secrets
+config.json
+settings.json
+.local.json
+.secrets.json
+
+# AI/ML model files
+*.model
+*.pkl
+*.h5
+*.onnx
+models/
+
+# Certificate files
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# JWT keys
+*.jwt
+jwt-*.key
+rsa-*.key
+
+# Environment specific
+.env.*.local
+.env.*.production
+.env.*.staging
+.env.*.development
+
+# IDE workspace files
+*.code-workspace
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# TypeScript
+*.tsbuildinfo
+
+# ESLint
+.eslintcache
+
+# Prettier
+.prettierignore
+
+# Jest
+coverage/
+.nyc_output/
+
+# Webpack
+.webpack/
+
+# Rollup
+.rollup.cache/
+
+# Parcel
+.parcel-cache/
+dist/
+
+# Next.js
+.next/
+out/
+
+# Nuxt.js
+.nuxt/
+dist/
+
+# Gatsby
+.cache/
+public/
+
+# Storybook
+.out/
+.storybook-out/
+
+# Temporary folders
+tmp/
+temp/

@@ -1,0 +1,65 @@
+name = "workspace-tools"
+main = "src/index.ts"
+compatibility_date = "2025-08-16"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+
+[observability]
+enabled=true
+
+[assets]
+directory = "./public/"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "workspace-tools"
+database_id = "YOUR_DATABASE_ID_HERE"
+preview_database_id= "YOUR_PREVIEW_DATABASE_ID_HERE"
+migrations_dir="./migrations"
+
+# Separate D1 instance for spam detection (to avoid bogging down primary DB)
+# [[d1_databases]]
+# binding = "SPAM_DB"
+# database_name = "workspace-tools-spam"
+# database_id = "YOUR_SPAM_DB_ID_HERE"  # Create with: wrangler d1 create workspace-tools-spam
+# preview_database_id = "YOUR_SPAM_PREVIEW_DB_ID_HERE"
+# migrations_dir="./migrations"
+
+# KV for caching
+[[kv_namespaces]]
+binding = "KV"
+id = "YOUR_KV_NAMESPACE_ID_HERE"
+
+[triggers]
+crons = ["0 */6 * * *"] # Run every 6 hours
+
+# Service bindings
+[[services]]
+binding = "AI_AGENT_WORKER"
+service = "YOUR_SERVICE_NAME_HERE"
+
+# wrangler vectorize create workspace-tools-embeddings --preset=@cf/baai/bge-base-en-v1.5
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "workspace-tools-embeddings"
+
+# Workers AI binding for embeddings and text generation
+[ai]
+binding = "AI"
+
+
+[vars]
+WORKSPACE_TOOLS_VERSION = "1.0.0"
+GOOGLE_AUTH_BASE = "https://accounts.google.com/o/oauth2/v2/auth"
+GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_API_BASE = "https://www.googleapis.com"
+OAUTH_REDIRECT_URI = "https://YOUR_WORKER_URL.workers.dev/oauth/callback"
+DEFAULT_USER = "default"
+
+# AI Provider API Keys (set via wrangler secret put)
+# GEMINI_API_KEY = "" 
+# ANTHROPIC_API_KEY = ""
+# OPENAI_API_KEY = ""
+# GOOGLE_SERVICE_ACCOUNT_KEY = ""
