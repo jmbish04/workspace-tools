@@ -5,7 +5,7 @@
 
 set -e
 
-REPO_NAME="worker-tools"
+REPO_NAME="workspace-tools"
 REPO_OWNER="jmbish04"
 BRANCH_FEATURE="feature/workspace-tools-implementation"
 

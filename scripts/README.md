@@ -88,7 +88,7 @@ If the scripts fail, you can run the commands manually:
 
 ```bash
 # 1. Create repository
-gh repo create jmbish04/worker-tools --public --description "Cloudflare Worker for Google Workspace integration with AI capabilities"
+gh repo create jmbish04/workspace-tools --public --description "Cloudflare Worker for Google Workspace integration with AI capabilities"
 
 # 2. Push branches
 git push -u origin main
@@ -126,7 +126,7 @@ gh pr comment [PR_NUMBER] --body "🤖 @google-ai/gemini Please review this impl
 ## 🔧 Configuration
 
 ### Repository Settings
-- **Name**: `worker-tools`
+- **Name**: `workspace-tools`
 - **Owner**: `jmbish04`
 - **Visibility**: Public
 - **Description**: "Cloudflare Worker for Google Workspace integration with AI capabilities"
@@ -172,8 +172,8 @@ gh pr comment [PR_NUMBER] --body "🤖 @google-ai/gemini Please review this impl
    # Check remote
    git remote -v
    
-   # Add remote if missing
-   git remote add origin https://github.com/jmbish04/worker-tools.git
+# Add remote if missing
+git remote add origin https://github.com/jmbish04/workspace-tools.git
    ```
 
 ### Debug Mode
@@ -208,7 +208,7 @@ bash -x scripts/submit-pr-for-gemini-review.sh
 
 After running the script, verify:
 
-1. **Repository exists**: https://github.com/jmbish04/worker-tools
+1. **Repository exists**: https://github.com/jmbish04/workspace-tools
 2. **PR created**: Check the pull requests tab
 3. **Gemini tagged**: Look for @google-ai/gemini in comments
 4. **Code uploaded**: Verify all files are present

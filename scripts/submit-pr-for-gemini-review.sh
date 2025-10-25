@@ -15,7 +15,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Configuration
-REPO_NAME="worker-tools"
+REPO_NAME="workspace-tools"
 REPO_OWNER="jmbish04"
 REPO_DESCRIPTION="Cloudflare Worker for Google Workspace integration with AI capabilities"
 BRANCH_MAIN="main"
