@@ -14,7 +14,7 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-WORKER_URL="${WORKER_URL:-http://localhost:8787є}
+WORKER_URL="${WORKER_URL:-http://localhost:8787}"
 
 echo -e "${YELLOW}Worker URL: $WORKER_URL${NC}"
 echo ""
