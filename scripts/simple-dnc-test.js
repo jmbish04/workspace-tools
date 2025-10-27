@@ -2,8 +2,8 @@
  * Simple test of the DNC email through our spam detection system
  */
 
-const { SpamDetectionAgent } = require('./src/agents/spam-detection');
-const { DeduplicationService } = require('./src/services/deduplication');
+const { SpamDetectionAgent } = require('../src/agents/spam-detection');
+const { DeduplicationService } = require('../src/services/deduplication');
 
 // Real DNC email data
 const dncEmail = {

@@ -612,7 +612,7 @@ class ComprehensiveWorkspaceToolsTester:
         """Save detailed test report to JSON file"""
         if filename is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"workspace_tools_test_report_{timestamp}.json"
+            filename = f"tests/results/workspace_tools_test_report_{timestamp}.json"
         
         try:
             with open(filename, 'w') as f:
