@@ -612,9 +612,13 @@ class ComprehensiveWorkspaceToolsTester:
         """Save detailed test report to JSON file"""
         if filename is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"workspace_tools_test_report_{timestamp}.json"
+            filename = f"tests/results/workspace_tools_test_report_{timestamp}.json"
         
         try:
+            # Ensure directory exists before saving
+            import os
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
+            
             with open(filename, 'w') as f:
                 json.dump(report, f, indent=2, default=str)
             self.log_and_print(f"📁 Detailed report saved to: {filename}", Colors.BLUE)

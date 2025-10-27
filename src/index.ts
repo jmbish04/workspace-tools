@@ -22,6 +22,8 @@ import { driveRoutes } from "./routes/drive";
 import { slidesRoutes } from "./routes/slides";
 import { sheetsRoutes } from "./routes/sheets";
 import { logsRoutes } from "./routes/logs";
+import healthCheckRoutes from "./routes/health-check";
+import { HealthCheckService } from "./services/health-check";
 import { EmailProcessingOrchestrator } from "./services/email-orchestrator";
 import { ProviderFactory } from "./providers";
 import { createLoggerFromContext, Logger } from "./utils/logger";
@@ -537,6 +539,7 @@ app.route("/drive", driveRoutes).use(createRateLimitMiddleware('general'));
 app.route("/sheets", sheetsRoutes).use(createRateLimitMiddleware('general'));
 app.route("/slides", slidesRoutes).use(createRateLimitMiddleware('documents'));
 app.route("/logs", logsRoutes).use(createRateLimitMiddleware('general'));
+app.route("/health-check", healthCheckRoutes);
 
 // --- Mount Processing Routes ---
 app.route("/thread-processor", threadProcessorRoutes);
@@ -857,6 +860,25 @@ async function processEmailsScheduled(env: Env): Promise<void> {
   }
 }
 
+/**
+ * Scheduled health check function - runs comprehensive health checks on all endpoints
+ */
+async function runScheduledHealthCheck(env: Env): Promise<void> {
+  try {
+    console.log('[Scheduled] Starting scheduled health check...');
+    
+    // Use HealthCheckService (imported at top of file)
+    const healthService = new HealthCheckService(env as any);
+    
+    // Run health checks
+    const report = await healthService.runHealthChecks();
+    
+    console.log(`[Scheduled] Health check complete: ${report.overall_status} (${report.passed_tests} passed, ${report.failed_tests} failed)`);
+  } catch (error) {
+    console.error('[Scheduled] Health check error:', error);
+  }
+}
+
 // --- Static Asset Serving ---
 app.get('*', async (c) => {
   const logger = (c.get('logger') as Logger) || createLoggerFromContext(c);
@@ -927,6 +949,9 @@ export default {
                 break;
             case '0 */6 * * *': // Every 6 hours for email processing (spam detection & thread analysis)
                 ctx.waitUntil(processEmailsScheduled(env));
+                break;
+            case '*/15 * * * *': // Every 15 minutes for health checks
+                ctx.waitUntil(runScheduledHealthCheck(env));
                 break;
         }
     },
