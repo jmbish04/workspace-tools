@@ -9,7 +9,7 @@ Your role is to execute the tasks outlined in the `project_tasks.json` file for 
 1.  **Select a Task**: Start with the first task in the `project_tasks.json` file that has a status of "pending".
 2.  **Update Status**: Before you begin working on the task, immediately update its status to "in_progress".
 3.  **Follow the Steps**: Carefully read the `description` and follow the `steps` array for the task. Implement the required code and functionality.
-4.  **MANDATORY Dry-Run Verification**: **YOU MUST ALWAYS** run `npm run dry-run` or `npm run verify` to confirm the code will successfully deploy to Cloudflare Workers. This is a **NON-NEGOTIABLE** precondition for task completion.
+YOU MUST run `npm run dry-run` or `npm run verify` to confirm the code will successfully deploy to Cloudflare Workers. This is a **MANDATORY** precondition for task completion.
 5.  **Verify Success**: Once you have completed the implementation AND passed the dry-run, verify your work against the `success_criteria` and `unit_test_criteria`. Write and run any necessary tests to ensure the feature is working correctly.
 6.  **Update Status to Done**: ONLY after successfully completing verification, passing the dry-run, and ensuring Cloudflare deployment compatibility, update its status to "done". **NO FALSE COMPLETIONS**.
 7.  **Move to Next Task**: Repeat the process, moving to the next "pending" task.
