@@ -20,8 +20,7 @@ YOU MUST run `npm run dry-run` or `npm run verify` to confirm the code will succ
 
 ### **CRITICAL RULE: NO TASK COMPLETION WITHOUT DEPLOYMENT VERIFICATION**
 
-> [!ERROR]
-> **DO NOT MARK A TASK AS "done" UNTIL YOU HAVE VERIFIED IT WILL SUCCESSFULLY DEPLOY TO CLOUDFLARE WORKERS**
+**DO NOT MARK A TASK AS "done" UNTIL YOU HAVE VERIFIED IT WILL SUCCESSFULLY DEPLOY TO CLOUDFLARE WORKERS**. See [Troubleshooting Guide](link-to-troubleshooting) for common issues.
 
 ### **Required Verification Process:**
 
