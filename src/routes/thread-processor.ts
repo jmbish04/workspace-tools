@@ -225,7 +225,7 @@ threadProcessorRoutes.get("/thread-stats/:threadId", async (c) => {
     const tacticalResult = { results: [] };
 
     // Calculate statistics
-    const participants = new Set(messagesResult.results.map(msg => msg.sender as string));
+    const participants = new Set(messagesResult.results.map((msg: any) => msg.sender as string));
     const totalInlineReplies = 0; // Disabled for now
     const suspiciousAnalyses = 0; // Disabled for now
 

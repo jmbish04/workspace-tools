@@ -72,11 +72,10 @@ gmailRoutes.post("/search", async (c) => {
       }, 400);
     }
 
-    const { query, user, maxResults = 10, testMode = false } = {
-      ...requestData,
-      query: validation.sanitizedData?.query || requestData.query,
-      testMode: requestData.testMode || false
-    };
+    const query = validation.sanitizedData?.query || requestData.query;
+    const user = requestData.user;
+    const maxResults = requestData.maxResults !== undefined ? requestData.maxResults : 10;
+    const testMode = requestData.testMode || false;
 
     // Check if this is a test from the dashboard
     if (testMode || query === 'from:test@example.com') {

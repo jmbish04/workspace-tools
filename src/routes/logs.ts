@@ -15,7 +15,7 @@ import { LoggerAdapter } from "../utils/logger-adapter";
  * @type {Hono<{ Bindings: Env }>}
  */
 export const logsRoutes = new Hono<{ 
-  Bindings: Env;
+  Bindings: Env & Record<string, unknown>;
   Variables: {
     logger: LoggerAdapter;
   };

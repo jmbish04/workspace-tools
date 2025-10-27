@@ -18,7 +18,7 @@ import { GoogleApiClient } from "../utils/google-api";
  * Hono router for Google Slides API endpoints.
  * @type {Hono<{ Bindings: Env }>}
  */
-export const slidesRoutes = new Hono<{ Bindings: Env }>();
+export const slidesRoutes = new Hono<{ Bindings: Env & Record<string, unknown> }>();
 
 /**
  * @route POST /create

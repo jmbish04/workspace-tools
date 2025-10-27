@@ -19,7 +19,7 @@ import { validateDocumentReadRequest, validateCommentRequest } from "../utils/va
  * Hono router for Google Docs API endpoints.
  * @type {Hono<{ Bindings: Env }>}
  */
-export const docsRoutes = new Hono<{ Bindings: Env }>();
+export const docsRoutes = new Hono<{ Bindings: Env & Record<string, unknown> }>();
 
 /**
  * @route POST /read

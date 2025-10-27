@@ -10,7 +10,10 @@
     "test": "tsx tests/run-tests.ts",
     "test:unit": "tsx tests/unit/cache.test.ts && tsx tests/unit/performance-monitor.test.ts",
     "test:integration": "tsx tests/integration/api.test.ts",
-    "test:watch": "tsx --watch tests/run-tests.ts"
+    "test:watch": "tsx --watch tests/run-tests.ts",
+    "dry-run": "npx tsc --noEmit",
+    "verify": "npm run dry-run && echo '✅ All checks passed - ready for commit!'",
+    "verify-full": "npm run test && npm run dry-run && echo '✅ All tests and checks passed!'"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",
@@ -21,6 +24,8 @@
     "openai": "^5.12.2"
   },
   "devDependencies": {
+    "@ai-sdk/provider": "^2.0.0",
+    "@cloudflare/workers-types": "^4.20251014.0",
     "@types/node": "^20.0.0",
     "tsx": "^4.0.0",
     "typescript": "^5.0.0",
