@@ -1014,26 +1014,24 @@ gmailRoutes.post("/draft-reply", async (c) => {
       console.warn(`Message ${messageId} not found, using fallback content`);
       
       // Create a fallback message structure for test scenarios
+      // This matches the GmailMessage interface exactly to prevent type errors
       originalMessage = {
         id: messageId,
-        threadId: '',
+        threadId: messageId + '_thread',
         snippet: 'Test message for draft reply generation',
         internalDate: Date.now().toString(),
-        sizeEstimate: 0,
-        labelIds: [],
         payload: {
-          mimeType: 'text/plain',
           headers: [
             { name: 'From', value: 'test@example.com' },
             { name: 'To', value: 'user@example.com' },
-            { name: 'Subject', value: 'Test Message' }
+            { name: 'Subject', value: 'Test Message' },
+            { name: 'Date', value: new Date().toISOString() }
           ],
           body: {
-            size: 0,
             data: btoa('This is a test message for draft reply generation.')
           }
         }
-      } as GmailMessage;
+      } as unknown as GmailMessage;
     }
     
     // Extract content from the message
