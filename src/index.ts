@@ -23,6 +23,7 @@ import { slidesRoutes } from "./routes/slides";
 import { sheetsRoutes } from "./routes/sheets";
 import { logsRoutes } from "./routes/logs";
 import healthCheckRoutes from "./routes/health-check";
+import { HealthCheckService } from "./services/health-check";
 import { EmailProcessingOrchestrator } from "./services/email-orchestrator";
 import { ProviderFactory } from "./providers";
 import { createLoggerFromContext, Logger } from "./utils/logger";
@@ -866,8 +867,7 @@ async function runScheduledHealthCheck(env: Env): Promise<void> {
   try {
     console.log('[Scheduled] Starting scheduled health check...');
     
-    // Import HealthCheckService
-    const { HealthCheckService } = await import('./services/health-check');
+    // Use HealthCheckService (imported at top of file)
     const healthService = new HealthCheckService(env as any);
     
     // Run health checks

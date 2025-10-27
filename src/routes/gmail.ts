@@ -1019,7 +1019,7 @@ gmailRoutes.post("/draft-reply", async (c) => {
         id: messageId,
         threadId: messageId + '_thread',
         snippet: 'Test message for draft reply generation',
-        internalDate: Date.now().toString(),
+        internalDate: new Date().toISOString(),
         payload: {
           headers: [
             { name: 'From', value: 'test@example.com' },

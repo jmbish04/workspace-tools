@@ -65,10 +65,16 @@ export class HealthCheckService {
         // Generate summary report
         const report = this.generateReport(results);
         
-        // Run Workers AI evaluation
-        const aiEvaluation = await this.evaluateHealthChecksWithAI(results);
-        report.workers_ai_evaluation = aiEvaluation.human_response;
-        report.ai_fix_prompt = aiEvaluation.fix_prompt;
+        // Run Workers AI evaluation only if there are failures or warnings
+        if (report.overall_status !== 'pass') {
+            const aiEvaluation = await this.evaluateHealthChecksWithAI(results);
+            report.workers_ai_evaluation = aiEvaluation.human_response;
+            report.ai_fix_prompt = aiEvaluation.fix_prompt;
+        } else {
+            // Set default values for successful health checks
+            report.workers_ai_evaluation = 'All health checks passed successfully';
+            report.ai_fix_prompt = 'No fixes needed';
+        }
         
         // Save report to D1
         await this.saveHealthCheckReport(report);
@@ -216,16 +222,29 @@ Please format your response as JSON with two fields: "human_response" and "fix_p
             let aiResponse: { human_response: string; fix_prompt: string };
 
             try {
-                // Try to parse as JSON first
-                const jsonMatch = text.match(/\{[\s\S]*\}/);
-                if (jsonMatch) {
-                    aiResponse = JSON.parse(jsonMatch[0]);
-                } else {
-                    // Fallback if not JSON
-                    aiResponse = {
-                        human_response: text,
-                        fix_prompt: `Fix the following health check issues:\n\n${failedChecks.map(r => `- ${r.check_name}: ${r.error_message}`).join('\n')}`
-                    };
+                // Try to parse as JSON first (best case)
+                try {
+                    aiResponse = JSON.parse(text);
+                } catch (parseError) {
+                    // If parsing fails, try to extract JSON from text using regex
+                    const jsonMatch = text.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        try {
+                            aiResponse = JSON.parse(jsonMatch[0]);
+                        } catch (regexParseError) {
+                            // Fallback if JSON extraction also fails
+                            aiResponse = {
+                                human_response: text,
+                                fix_prompt: `Fix the following health check issues:\n\n${failedChecks.map(r => `- ${r.check_name}: ${r.error_message}`).join('\n')}`
+                            };
+                        }
+                    } else {
+                        // Fallback if no JSON found
+                        aiResponse = {
+                            human_response: text,
+                            fix_prompt: `Fix the following health check issues:\n\n${failedChecks.map(r => `- ${r.check_name}: ${r.error_message}`).join('\n')}`
+                        };
+                    }
                 }
             } catch (e) {
                 aiResponse = {
