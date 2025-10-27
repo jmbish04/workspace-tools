@@ -18,7 +18,7 @@ import { GoogleApiClient } from "../utils/google-api";
  * Hono router for Google Drive API endpoints.
  * @type {Hono<{ Bindings: Env }>}
  */
-export const driveRoutes = new Hono<{ Bindings: Env }>();
+export const driveRoutes = new Hono<{ Bindings: Env & Record<string, unknown> }>();
 
 /**
  * @route POST /search

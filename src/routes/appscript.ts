@@ -19,7 +19,7 @@ import { templateManager } from "../utils/html-template-manager-clean";
  * Hono router for Google Apps Script API endpoints.
  * @type {Hono<{ Bindings: Env }>}
  */
-export const appsScriptRoutes = new Hono<{ Bindings: Env }>();
+export const appsScriptRoutes = new Hono<{ Bindings: Env & Record<string, unknown> }>();
 
 /**
  * @route POST /create

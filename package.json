@@ -24,6 +24,8 @@
     "openai": "^5.12.2"
   },
   "devDependencies": {
+    "@ai-sdk/provider": "^2.0.0",
+    "@cloudflare/workers-types": "^4.20251014.0",
     "@types/node": "^20.0.0",
     "tsx": "^4.0.0",
     "typescript": "^5.0.0",
