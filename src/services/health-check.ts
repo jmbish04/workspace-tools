@@ -185,13 +185,18 @@ Authentication: Service Account with domain-wide delegation
 `;
 
             // Use Workers AI to analyze the health checks
-            const prompt = `You are an expert at diagnosing Google Workspace API integrations and Cloudflare Workers architecture.\n` +
-                `You specialize in understanding authentication issues, API errors, and system connectivity problems.\n\n` +
-                `Analyze the following health check failures and provide:\n` +
-                `1. A human-readable explanation of what's wrong\n` +
-                `2. A detailed prompt for an AI development agent to fix the issues\n\n` +
-                `Context: ${context}\n\n` +
-                `Respond strictly as JSON with two fields: "human_response" and "fix_prompt".`;
+            const prompt = [
+                'You are an expert at diagnosing Google Workspace API integrations and Cloudflare Workers architecture.',
+                'You specialize in understanding authentication issues, API errors, and system connectivity problems.',
+                '',
+                'Analyze the following health check failures and provide:',
+                "1. A human-readable explanation of what's wrong",
+                '2. A detailed prompt for an AI development agent to fix the issues',
+                '',
+                `Context: ${context}`,
+                '',
+                'Respond strictly as JSON with two fields: "human_response" and "fix_prompt".'
+            ].join('\n');
 
             const response = await this.env.AI.run('@cf/meta/llama-3-8b-instruct' as any, {
                 input: prompt
