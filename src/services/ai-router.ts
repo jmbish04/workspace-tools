@@ -46,7 +46,7 @@ export interface AiRouterResult {
 }
 
 interface ModelSelection {
-  model: "@cf/openai/gpt-oss-120b" | "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+  model: ModelName;
   contextWindow: number;
   reasoningLevel: ReasoningLevel;
 }
