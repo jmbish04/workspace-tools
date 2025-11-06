@@ -8,7 +8,7 @@ export interface AiRouterRequest {
   context?: string;
   instructions?: string;
   reasoningLevel?: ReasoningLevel;
-  preferredModel?: "@cf/openai/gpt-oss-120b" | "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+  preferredModel?: ModelName;
   maxOutputTokens?: number;
 }
 
