@@ -50,6 +50,7 @@ export class HealthCheckService {
             { name: 'Email Processing Health', endpoint: '/email-processing/status', method: 'GET' },
             { name: 'Thread Processor Health', endpoint: '/thread-processor/health', method: 'GET' },
             { name: 'A2A Health', endpoint: '/a2a/health', method: 'GET' },
+            { name: 'AI Router Health', endpoint: '/ai/health', method: 'GET' },
             { name: 'System Health', endpoint: '/health', method: 'GET' },
         ];
 
