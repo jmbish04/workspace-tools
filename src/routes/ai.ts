@@ -82,7 +82,7 @@ function isReasoningLevel(value: unknown): value is AiRouterRequest["reasoningLe
 }
 
 function isPreferredModel(value: unknown): value is AiRouterRequest["preferredModel"] {
-  return value === "@cf/openai/gpt-oss-120b" || value === "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+  return typeof value === 'string' && Object.keys(MODEL_CONFIG).includes(value);
 }
 
 export default app;
