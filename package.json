@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "deploy": "npm run migrate:remote && wrangler deploy",
     "start": "wrangler dev",
     "migrate:local": "wrangler d1 migrations apply DB --local",
     "migrate:remote": "wrangler d1 migrations apply DB --remote",
@@ -13,7 +12,9 @@
     "test:watch": "tsx --watch tests/run-tests.ts",
     "dry-run": "npx tsc --noEmit",
     "verify": "npm run dry-run && echo '✅ All checks passed - ready for commit!'",
-    "verify-full": "npm run test && npm run dry-run && echo '✅ All tests and checks passed!'"
+    "verify-full": "npm run test && npm run dry-run && echo '✅ All tests and checks passed!'",
+    "check:lock": "npm ls --json > /dev/null || (echo '❌ package-lock.json out of sync'; exit 1)",
+    "deploy": "npm run check:lock && npm run migrate:db:remote && wrangler deploy"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",
