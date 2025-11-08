@@ -23,6 +23,7 @@ import { slidesRoutes } from "./routes/slides";
 import { sheetsRoutes } from "./routes/sheets";
 import { logsRoutes } from "./routes/logs";
 import healthCheckRoutes from "./routes/health-check";
+import aiRoutes from "./routes/ai";
 import { HealthCheckService } from "./services/health-check";
 import { EmailProcessingOrchestrator } from "./services/email-orchestrator";
 import { ProviderFactory } from "./providers";
@@ -540,6 +541,7 @@ app.route("/sheets", sheetsRoutes).use(createRateLimitMiddleware('general'));
 app.route("/slides", slidesRoutes).use(createRateLimitMiddleware('documents'));
 app.route("/logs", logsRoutes).use(createRateLimitMiddleware('general'));
 app.route("/health-check", healthCheckRoutes);
+app.route("/ai", aiRoutes).use(createRateLimitMiddleware('ai'));
 
 // --- Mount Processing Routes ---
 app.route("/thread-processor", threadProcessorRoutes);
