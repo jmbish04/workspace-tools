@@ -89,7 +89,7 @@ async function runAiRouter(context: TestExecutionContext): Promise<TestExecution
 
     const sanitized = response.aggregatedResponse.trim().toUpperCase();
 
-    if (!sanitized.includes("OK")) {
+    if (sanitized !== "OK") {
       return {
         status: "fail",
         rawOutput: JSON.stringify(response),
