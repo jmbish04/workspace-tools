@@ -40,7 +40,12 @@ export interface TestRunSummary {
 }
 
 async function runExecute(env: Env, sql: string, ...params: unknown[]) {
-  return env.DB.prepare(sql).bind(...params).run();
+  const result = await env.DB.prepare(sql).bind(...params).run();
+  if (!result.success) {
+    // Throw an error to ensure the caller handles the failure.
+    throw new Error(`DB execute failed for query: ${sql.substring(0, 100)}...`);
+  }
+  return result;
 }
 
 async function runQuery<T = Record<string, unknown>>(env: Env, sql: string, ...params: unknown[]): Promise<T[]> {
