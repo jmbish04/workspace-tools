@@ -7,6 +7,7 @@ pnpm-debug.log*
 
 # Build outputs
 dist/
+.tests-dist/
 build/
 *.tsbuildinfo
 worker/
@@ -117,6 +118,7 @@ coverage/
 *.test.ts
 *.spec.js
 *.spec.ts
+!tests/unit/health.routes.test.ts
 
 # Backup files
 *.bak

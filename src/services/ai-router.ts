@@ -69,6 +69,8 @@ const MODEL_CONFIG = {
   },
 } as const;
 
+type ModelName = keyof typeof MODEL_CONFIG;
+
 export class AiRouterService {
   private readonly env: Env;
   private readonly logger?: LoggerAdapter;

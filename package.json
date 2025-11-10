@@ -1,11 +1,15 @@
 {
-  "name": "workspace-tools",
-  "version": "0.0.0",
+  "name": "core-workspace-tools",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "wrangler dev",
-    "migrate:local": "wrangler d1 migrations apply DB --local",
-    "migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "migrate:DB:local": "wrangler d1 migrations apply DB --local",
+    "migrate:DB:remote": "wrangler d1 migrations apply DB --remote",
+    "migrate:DB_SPAM:local": "wrangler d1 migrations apply DB_SPAM --local",
+    "migrate:DB_SPAM:remote": "wrangler d1 migrations apply DB_SPAM --remote",
+    "migrate:all:local": "npm run migrate:DB:local && npm run migrate:DB_SPAM:local",
+    "migrate:all:remote": "npm run migrate:DB:remote && npm run migrate:DB_SPAM:remote",
     "test": "tsx tests/run-tests.ts",
     "test:unit": "tsx tests/unit/cache.test.ts && tsx tests/unit/performance-monitor.test.ts",
     "test:integration": "tsx tests/integration/api.test.ts",
@@ -14,7 +18,8 @@
     "verify": "npm run dry-run && echo '✅ All checks passed - ready for commit!'",
     "verify-full": "npm run test && npm run dry-run && echo '✅ All tests and checks passed!'",
     "check:lock": "npm ls --json > /dev/null || (echo '❌ package-lock.json out of sync'; exit 1)",
-    "deploy": "npm run check:lock && npm run migrate:db:remote && wrangler deploy"
+    "migrate:db": "wrangler d1 migrations apply DB --remote",
+    "deploy": "npm run migrate:db && wrangler deploy"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",
