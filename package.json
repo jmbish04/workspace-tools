@@ -19,7 +19,7 @@
     "verify-full": "npm run test && npm run dry-run && echo '✅ All tests and checks passed!'",
     "check:lock": "npm ls --json > /dev/null || (echo '❌ package-lock.json out of sync'; exit 1)",
     "migrate:db": "wrangler d1 migrations apply DB --remote",
-    "deploy": "npm run migrate:db && wrangler deploy"
+    "deploy": "npm run check:lock && npm run migrate:db && wrangler deploy"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.60.0",
