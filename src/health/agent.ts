@@ -14,7 +14,7 @@ export async function analyzeHealthReport(
   logger?: LoggerAdapter,
 ): Promise<HealthAnalysis> {
   const runsResult = await env.DB.prepare(
-    "SELECT * FROM health_runs WHERE report_id = ?",
+    "SELECT id FROM health_runs WHERE report_id = ?",
   )
     .bind(reportId)
     .all();
