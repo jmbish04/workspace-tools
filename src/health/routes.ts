@@ -124,7 +124,7 @@ app.post('/run', async (c) => {
             analysis,
             timestamp: new Date().toISOString()
         }, 200);
-    } catch (error: any) {
+    } catch (error: unknown) {
         await db.prepare('UPDATE health_reports SET status = ? WHERE id = ?')
             .bind('ERROR', reportId)
             .run();
