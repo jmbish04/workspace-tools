@@ -195,7 +195,8 @@ app.get('/latest', async (c) => {
 app.get('/history', async (c) => {
     try {
         const endpoint = c.req.query('endpoint');
-        const limit = parseInt(c.req.query('limit') || '100');
+        const limitParam = c.req.query('limit') || '100';
+        const limit = Number.isNaN(parseInt(limitParam)) ? 100 : parseInt(limitParam);
         
         const healthService = new HealthCheckService(c.env);
         const history = await healthService.getHealthCheckHistory(endpoint, limit);
