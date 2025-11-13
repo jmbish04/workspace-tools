@@ -13,17 +13,19 @@
 import { drive_v3, google } from "googleapis";
 import { Context, Hono } from "hono";
 import { cors } from "hono/cors";
-import { gmailRoutes } from "./routes/gmail";
-import { threadProcessorRoutes } from "./routes/thread-processor";
-import { emailProcessingRoutes } from "./routes/email-processing";
-import { a2aRoutes } from "./routes/a2a";
-import { docsRoutes } from "./routes/docs";
-import { driveRoutes } from "./routes/drive";
-import { slidesRoutes } from "./routes/slides";
-import { sheetsRoutes } from "./routes/sheets";
-import { logsRoutes } from "./routes/logs";
-import healthCheckRoutes from "./routes/health-check";
-import aiRoutes from "./routes/ai";
+import { gmailRoutes } from "./gmail";
+import { threadProcessorRoutes } from "./thread-processor";
+import { emailProcessingRoutes } from "./email";
+import { a2aRoutes } from "./a2a";
+import { docsRoutes } from "./docs";
+import { driveRoutes } from "./drive";
+import { slidesRoutes } from "./slides";
+import { sheetsRoutes } from "./sheets";
+import { logsRoutes } from "./logs";
+import { healthRoutes } from "./health";
+import { aiRoutes } from "./ai";
+import { runHealthTestSuite } from "./testing/runner";
+import type { Env } from "./types";
 import { HealthCheckService } from "./services/health-check";
 import { EmailProcessingOrchestrator } from "./services/email-orchestrator";
 import { ProviderFactory } from "./providers";
@@ -540,7 +542,8 @@ app.route("/drive", driveRoutes).use(createRateLimitMiddleware('general'));
 app.route("/sheets", sheetsRoutes).use(createRateLimitMiddleware('general'));
 app.route("/slides", slidesRoutes).use(createRateLimitMiddleware('documents'));
 app.route("/logs", logsRoutes).use(createRateLimitMiddleware('general'));
-app.route("/health-check", healthCheckRoutes);
+app.route("/health", healthRoutes);
+app.route("/health-check", healthRoutes);
 app.route("/ai", aiRoutes).use(createRateLimitMiddleware('ai'));
 
 // --- Mount Processing Routes ---
@@ -954,6 +957,16 @@ export default {
                 break;
             case '*/15 * * * *': // Every 15 minutes for health checks
                 ctx.waitUntil(runScheduledHealthCheck(env));
+                break;
+            case '5 * * * *': // Hourly automated diagnostic suite
+                ctx.waitUntil((async () => {
+                    try {
+                        const summary = await runHealthTestSuite(env);
+                        console.log(`[Scheduled] Health diagnostics complete: ${summary.counts.passed}/${summary.counts.total} passed (session ${summary.sessionUuid})`);
+                    } catch (error) {
+                        console.error('[Scheduled] Health diagnostics failed', error);
+                    }
+                })());
                 break;
         }
     },

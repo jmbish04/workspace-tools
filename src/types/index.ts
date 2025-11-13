@@ -21,6 +21,9 @@ export interface Env {
   // AI bindings
   AI: Ai;
   
+  // Asset bindings
+  ASSETS: Fetcher;
+  
   // Service bindings
   AI_AGENT_WORKER: Fetcher;
   
