@@ -58,7 +58,7 @@ const DEFAULT_SYSTEM_PROMPT = [
   "Include a concise summary and next steps when relevant."
 ].join(" \n");
 
-const MODEL_CONFIG = {
+export const MODEL_CONFIG = {
   "@cf/openai/gpt-oss-120b": {
     contextTokens: 128_000,
     safetyMargin: 6_000,

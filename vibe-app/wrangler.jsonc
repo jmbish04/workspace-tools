@@ -1,0 +1,22 @@
+{
+  "name": "vibe-app",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "ROOM_DO", "class_name": "RoomDO" }]
+  },
+  "migrations": [{ "tag": "v1", "new_classes": ["RoomDO"] }],
+  "d1_databases": [{ "binding": "DB", "database_name": "vibe-db", "database_id": "<set-after-create>" }],
+  "ai": { "binding": "AI" },
+  "triggers": { "crons": ["*/15 * * * *"] }
+}

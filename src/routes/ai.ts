@@ -1,3 +1,4 @@
+import { MODEL_CONFIG } from "../services/ai-router";
 import { Hono } from "hono";
 import { Env } from "../types";
 import { AiRouterRequest, AiRouterService } from "../services/ai-router";

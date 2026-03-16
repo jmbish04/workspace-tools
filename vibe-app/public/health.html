@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Status | Vibe App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="bg-slate-900 text-slate-50 font-sans antialiased min-h-screen">
+
+  <div id="nav-container"></div>
+
+  <main class="pt-32 pb-24 container mx-auto px-6 max-w-5xl">
+    <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 fade-in-up">
+      <div>
+        <h1 class="text-4xl font-bold mb-3 tracking-tight">System Health</h1>
+        <p class="text-slate-400">Real-time status, diagnostics, and AI-driven automated remediation.</p>
+      </div>
+      <div>
+        <button id="run-tests-btn" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 transition rounded-lg text-white font-semibold flex items-center space-x-2 shadow-lg shadow-emerald-500/20">
+          <span>Run Health Tests</span>
+          <svg id="run-spinner" class="animate-spin -mr-1 ml-2 h-4 w-4 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Tests Section -->
+    <div class="mb-16 fade-in-up delay-100">
+      <h2 class="text-2xl font-bold mb-6 text-slate-200">Active Test Definitions</h2>
+      <div id="defs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <p class="text-slate-500">Loading test definitions...</p>
+      </div>
+    </div>
+
+    <!-- Latest Results Section -->
+    <div class="fade-in-up delay-200">
+      <h2 class="text-2xl font-bold mb-6 text-slate-200">Latest Session Results</h2>
+      <div class="bg-slate-800/40 border border-slate-700 rounded-xl overflow-hidden shadow-xl">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-800/80 border-b border-slate-700 text-sm font-medium text-slate-400">
+              <th class="p-4">Test Status</th>
+              <th class="p-4">Duration</th>
+              <th class="p-4">Details</th>
+              <th class="p-4">AI Analysis</th>
+            </tr>
+          </thead>
+          <tbody id="results-body">
+            <tr>
+              <td colspan="4" class="p-6 text-center text-slate-500">No session data fetched yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="/client.js"></script>
+  <script>
+    async function loadDefs() {
+      try {
+        const data = await apiFetch('/api/tests/defs');
+        const container = document.getElementById('defs-container');
+        if(!data.success || !data.tests.length) {
+          container.innerHTML = '<p class="text-slate-500">No active tests found.</p>';
+          return;
+        }
+
+        container.innerHTML = data.tests.map(t => `
+          <div class="p-5 bg-slate-800/50 border border-slate-700 rounded-xl">
+            <div class="flex items-start justify-between mb-3">
+              <h3 class="font-bold text-slate-200">${t.name}</h3>
+              <span class="text-xs font-semibold px-2 py-1 rounded bg-slate-700 text-slate-300">${t.category}</span>
+            </div>
+            <p class="text-sm text-slate-400 leading-relaxed">${t.description}</p>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error("Failed to load defs", e);
+      }
+    }
+
+    async function loadResults() {
+      try {
+        const data = await apiFetch('/api/tests/latest');
+        const tbody = document.getElementById('results-body');
+
+        if (!data.success || !data.results || !data.results.length) {
+          tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500">No recent test results available.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.results.map(r => `
+          <tr class="border-b border-slate-700/50 hover:bg-slate-800/40 transition">
+            <td class="p-4 font-medium flex items-center gap-3">
+              ${r.status === 'pass'
+                ? '<span class="flex h-3 w-3 rounded-full bg-emerald-500"></span><span class="text-emerald-400">Pass</span>'
+                : '<span class="flex h-3 w-3 rounded-full bg-rose-500"></span><span class="text-rose-400">Fail</span>'}
+              <span class="text-slate-500 text-sm ml-2 font-mono">${r.test_fk.split('-')[0]}</span>
+            </td>
+            <td class="p-4 text-slate-300 font-mono text-sm">${r.duration_ms}ms</td>
+            <td class="p-4 text-slate-400 text-sm max-w-xs truncate" title='${r.raw || "No raw data"}'>
+              ${r.error_code ? `<span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs mr-2">${r.error_code}</span>` : ''}
+              ${r.raw || '-'}
+            </td>
+            <td class="p-4 text-sm max-w-sm">
+              ${r.ai_human_readable_error_description
+                ? `<div class="bg-indigo-500/10 border border-indigo-500/20 p-2 rounded text-indigo-300 mb-1 leading-snug">${r.ai_human_readable_error_description}</div>
+                   <div class="text-xs text-slate-500 italic">Fix: ${r.ai_prompt_to_fix_error}</div>`
+                : '<span class="text-slate-600">-</span>'}
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error("Failed to load results", e);
+      }
+    }
+
+    document.getElementById('run-tests-btn').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      const spinner = document.getElementById('run-spinner');
+
+      btn.disabled = true;
+      btn.classList.add('opacity-75');
+      spinner.classList.remove('hidden');
+
+      try {
+        const sessionReq = await apiFetch('/api/tests/run', { method: 'POST' });
+        console.log("Started session:", sessionReq.session_uuid);
+
+        // Polling mock: Wait 3s then reload
+        setTimeout(() => {
+          loadResults();
+          btn.disabled = false;
+          btn.classList.remove('opacity-75');
+          spinner.classList.add('hidden');
+        }, 3000);
+
+      } catch(err) {
+        console.error("Run test error", err);
+        btn.disabled = false;
+        btn.classList.remove('opacity-75');
+        spinner.classList.add('hidden');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDefs();
+      loadResults();
+    });
+  </script>
+</body>
+</html>
